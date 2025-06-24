@@ -1,0 +1,24 @@
+# Go
+/bin/
+/*.exe
+*.test
+*.out
+vendor/
+
+# Go modules
+go.sum
+
+# Dependency directories
+**/node_modules/
+
+# Frontend build
+/frontend/dist
+/frontend/build
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
