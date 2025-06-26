@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	_ "github.com/lib/pq"
 
 	"url_shortener/internal/handler"
@@ -40,7 +41,15 @@ func main() {
 
 	// Routing
 	r := chi.NewRouter()
+	// Logger
 	r.Use(middleware.Logger)
+	// CORS
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowCredentials: false,
+	}))
 
 	r.Post("/links/shorten", h.Shorten)
 	r.Get("/u/{id}", h.Redirect)
