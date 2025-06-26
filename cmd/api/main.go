@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	// Konfiguracja połączenia z bazą
+	// Database configuration
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
 		dbURL = "postgres://postgres:postgres@localhost:5432/shortener?sslmode=disable"
@@ -29,7 +29,7 @@ func main() {
 	}
 	defer db.Close()
 
-	// Inicjalizacja warstw
+	// Initialize
 	repo := repository.NewPostgresRepository(db)
 	baseURL := os.Getenv("BASE_URL")
 	if baseURL == "" {
