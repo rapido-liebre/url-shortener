@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -20,14 +19,15 @@ func NewHandler(svc *service.ShortenerService) *Handler {
 
 func (h *Handler) Shorten(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		LongURL string `json:"long_url"`
+		LongURL  string `json:"long_url"`
+		ForceNew bool   `json:"force_new"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || !strings.HasPrefix(req.LongURL, "http") {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
 
-	shortURL, err := h.svc.ShortenURL(r.Context(), req.LongURL)
+	shortURL, err := h.svc.ShortenURL(r.Context(), req.LongURL, req.ForceNew)
 	if err != nil {
 		http.Error(w, "Internal error", http.StatusInternalServerError)
 		return
@@ -38,7 +38,7 @@ func (h *Handler) Shorten(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
-	longURL, err := h.svc.ResolveURL(context.Background(), id)
+	longURL, err := h.svc.ResolveURL(r.Context(), id)
 	if err != nil {
 		http.NotFound(w, r)
 		return

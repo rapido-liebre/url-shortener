@@ -1,3 +1,6 @@
+include .env
+export
+
 # Build and start all containers
 up:
 	docker-compose up --build
@@ -27,3 +30,12 @@ frontend-dev:
 # Reset everything: clean volumes and rebuild
 reset-db:
 	docker-compose down -v && docker-compose up --build
+
+# Run Go tests
+test:
+	go test ./... -v
+
+# Format and lint Go code
+lint:
+	go fmt ./...
+	go vet ./...

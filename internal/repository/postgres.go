@@ -3,13 +3,13 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"url_shortener/internal/model"
 )
 
 type URLRepository interface {
 	Save(ctx context.Context, url model.URL) error
-	Get(ctx context.Context, shortID string) (string, error)
+	FindByLongURL(ctx context.Context, longURL string) (string, error)
+	GetByShortID(ctx context.Context, shortID string) (string, error)
 }
 
 type PostgresRepository struct {
@@ -27,12 +27,22 @@ func (r *PostgresRepository) Save(ctx context.Context, url model.URL) error {
 	return err
 }
 
-func (r *PostgresRepository) Get(ctx context.Context, shortID string) (string, error) {
+func (r *PostgresRepository) FindByLongURL(ctx context.Context, longURL string) (string, error) {
+	var shortID string
+	err := r.db.QueryRowContext(ctx,
+		"SELECT short_id FROM urls WHERE long_url = $1", longURL).Scan(&shortID)
+	if err == sql.ErrNoRows {
+		return "", nil // brak istniejącego
+	}
+	return shortID, err
+}
+
+func (r *PostgresRepository) GetByShortID(ctx context.Context, shortID string) (string, error) {
 	var longURL string
 	err := r.db.QueryRowContext(ctx,
 		"SELECT long_url FROM urls WHERE short_id = $1", shortID).Scan(&longURL)
 	if err == sql.ErrNoRows {
-		return "", errors.New("not found")
+		return "", nil
 	}
 	return longURL, err
 }

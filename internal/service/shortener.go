@@ -29,7 +29,17 @@ func (s *ShortenerService) generateShortID(n int) string {
 	return string(b)
 }
 
-func (s *ShortenerService) ShortenURL(ctx context.Context, longURL string) (string, error) {
+func (s *ShortenerService) ShortenURL(ctx context.Context, longURL string, forceNew bool) (string, error) {
+	if !forceNew {
+		existing, err := s.repo.FindByLongURL(ctx, longURL)
+		if err != nil {
+			return "", err
+		}
+		if existing != "" {
+			return s.baseURL + "/u/" + existing, nil
+		}
+	}
+
 	shortID := s.generateShortID(6)
 	err := s.repo.Save(ctx, model.URL{ShortID: shortID, LongURL: longURL})
 	if err != nil {
@@ -39,5 +49,5 @@ func (s *ShortenerService) ShortenURL(ctx context.Context, longURL string) (stri
 }
 
 func (s *ShortenerService) ResolveURL(ctx context.Context, shortID string) (string, error) {
-	return s.repo.Get(ctx, shortID)
+	return s.repo.GetByShortID(ctx, shortID)
 }
