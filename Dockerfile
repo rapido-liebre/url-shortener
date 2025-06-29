@@ -24,8 +24,12 @@ COPY --from=backend /app/url_shortener /usr/bin/url-shortener
 # Copy custom nginx config
 COPY deploy/nginx.conf /etc/nginx/nginx.conf
 
+# Copy execution script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
 # Expose port 80
 EXPOSE 80
 
 # Run both: Nginx (in background) + Go app
-CMD ["/bin/sh", "-c", "nginx && /usr/bin/url-shortener"]
+CMD ["/start.sh"]
