@@ -14,6 +14,8 @@ fi
 # Give Nginx a while..
 sleep 1
 
+echo "[start.sh] PORT value: $PORT"
+
 echo "[start.sh] Checking if Nginx is responding on port 80..."
 
 curl -I http://localhost/ || echo "[start.sh] ERROR: Nginx not responding on port 80"
