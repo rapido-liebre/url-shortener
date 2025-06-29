@@ -11,6 +11,13 @@ else
   echo "[start.sh] Nginx started successfully"
 fi
 
+# Give Nginx a while..
+sleep 1
+
+echo "[start.sh] Checking if Nginx is responding on port 80..."
+
+curl -I http://localhost/ || echo "[start.sh] ERROR: Nginx not responding on port 80"
+
 echo "[start.sh] Checking frontend build in /usr/share/nginx/html:"
 ls -l /usr/share/nginx/html || echo "[start.sh] WARNING: Frontend files missing!"
 
