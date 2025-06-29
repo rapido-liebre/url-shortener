@@ -32,4 +32,4 @@ RUN chmod +x /start.sh
 EXPOSE 80
 
 # Run both services
-CMD ["/start.sh"]
+ENTRYPOINT ["/start.sh"]
