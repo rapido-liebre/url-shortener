@@ -1,4 +1,4 @@
-# Build stage
+# Stage 1 — Build React frontend
 FROM node:20 AS builder
 WORKDIR /app
 COPY . .
