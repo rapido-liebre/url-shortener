@@ -32,7 +32,7 @@ RUN chmod +x /start.sh
 EXPOSE 80
 
 # Listening port
-ENV PORT=80
+ENV PORT=8080
 
 # Run both services
 ENTRYPOINT ["/start.sh"]

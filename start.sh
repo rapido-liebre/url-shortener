@@ -23,5 +23,5 @@ curl -I http://localhost/ || echo "[start.sh] ERROR: Nginx not responding on por
 echo "[start.sh] Checking frontend build in /usr/share/nginx/html:"
 ls -l /usr/share/nginx/html || echo "[start.sh] WARNING: Frontend files missing!"
 
-echo "[start.sh] Starting Go backend..."
-exec /usr/bin/url-shortener
+echo "[start.sh] Starting Go backend on port 8081..."
+exec /usr/bin/url-shortener -port=8081
