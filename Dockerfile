@@ -1,7 +1,7 @@
 # Build stage
 FROM node:20 AS frontend
 WORKDIR /app
-COPY . .
+COPY frontend/ .
 RUN npm install && npm run build
 
 # Stage 2 — Build Go backend
@@ -19,7 +19,7 @@ FROM nginx:stable-alpine
 COPY --from=frontend /app/dist /usr/share/nginx/html
 
 # Copy backend binary
-COPY --from=backend /app/app /usr/bin/url-shortener
+COPY --from=backend /app/url_shortener /usr/bin/url-shortener
 
 # Copy custom nginx config
 COPY deploy/nginx.conf /etc/nginx/nginx.conf
