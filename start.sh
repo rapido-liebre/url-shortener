@@ -1,7 +1,15 @@
 #!/bin/sh
 
-# Run Nginx in the background
-nginx &
+echo "[start.sh] Starting Nginx..."
+nginx
+NGINX_EXIT=$?
 
-# Run backend as main process (PID 1)
+if [ $NGINX_EXIT -ne 0 ]; then
+  echo "[start.sh] ERROR: Nginx failed to start (exit code $NGINX_EXIT)"
+  exit $NGINX_EXIT
+else
+  echo "[start.sh] Nginx started successfully"
+fi
+
+echo "[start.sh] Starting Go backend..."
 exec /usr/bin/url-shortener
