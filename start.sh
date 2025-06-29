@@ -11,5 +11,8 @@ else
   echo "[start.sh] Nginx started successfully"
 fi
 
+echo "[start.sh] Checking frontend build in /usr/share/nginx/html:"
+ls -l /usr/share/nginx/html || echo "[start.sh] WARNING: Frontend files missing!"
+
 echo "[start.sh] Starting Go backend..."
 exec /usr/bin/url-shortener
