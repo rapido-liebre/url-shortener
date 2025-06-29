@@ -31,5 +31,8 @@ RUN chmod +x /start.sh
 # Port exposed to Railway
 EXPOSE 80
 
+# Listening port
+ENV PORT=80
+
 # Run both services
 ENTRYPOINT ["/start.sh"]
