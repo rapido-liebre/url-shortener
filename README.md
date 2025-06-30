@@ -11,6 +11,14 @@ A lightweight URL shortener built with Go, PostgreSQL and React.
 
 ---
 
+## 🌐 Live Demo
+
+Frontend: [https://url-shortener-production-8953.up.railway.app](https://url-shortener-production-8953.up.railway.app)  
+Backend API: `https://url-shortener-production-8953.up.railway.app/links/shorten`  
+Redirects: `https://url-shortener-production-8953.up.railway.app/u/:id`
+
+---
+
 ## 🚀 Running locally (with Docker)
 
 ```bash
@@ -70,6 +78,8 @@ make logs          # Tail backend logs
 make curl          # Test POST /links/shorten with curl
 make psql          # Access PostgreSQL CLI inside container
 make frontend-dev  # Start frontend locally (npm run dev)
+make lint          # Run linter
+make test          # Execute tests
 ```
 
 ## 🌍 Deployment

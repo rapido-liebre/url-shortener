@@ -35,14 +35,19 @@ func (h *Handler) Shorten(w http.ResponseWriter, r *http.Request) {
 
 	// Decode and validate the request payload
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || !strings.HasPrefix(req.LongURL, "http") {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Bad request"})
+
 		return
 	}
 
 	// Generate or fetch existing short URL
 	shortURL, err := h.svc.ShortenURL(r.Context(), req.LongURL, req.ForceNew)
 	if err != nil {
-		http.Error(w, "Internal error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 		return
 	}
 
