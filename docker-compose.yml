@@ -16,13 +16,13 @@ services:
 
   app:
     env_file:
-      - .env
+      - .env.docker
     build:
       context: .
     depends_on:
       - db
     ports:
-      - "3000:80"
+      - "8080:80" # hostPort:containerPort (Nginx)
     restart: unless-stopped
 
 volumes:

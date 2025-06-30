@@ -1,7 +1,8 @@
 #!/bin/sh
 
 echo "[start.sh] Starting Nginx..."
-nginx
+# Nginx works as subprocess, not deamon
+nginx -g 'daemon off;' &
 NGINX_EXIT=$?
 
 if [ $NGINX_EXIT -ne 0 ]; then
@@ -13,6 +14,16 @@ fi
 
 # Give Nginx a while..
 sleep 1
+
+echo "[start.sh] Sourcing .env from /app/.env"
+if [ -f /app/.env ]; then
+  export $(grep -v '^#' /app/.env | xargs)
+else
+  echo "[start.sh] WARNING: /app/.env not found"
+fi
+
+echo "[start.sh] Listing files in /app:"
+ls -la /app
 
 echo "[start.sh] PORT value: $PORT"
 
