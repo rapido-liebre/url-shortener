@@ -14,6 +14,7 @@ fi
 # Give Nginx a while..
 sleep 1
 
+PORT=${PORT:-8080}
 echo "[start.sh] PORT value: $PORT"
 
 echo "[start.sh] Checking if Nginx is responding on port 80..."

@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 
@@ -28,6 +29,8 @@ func NewHandler(svc Shortener) *Handler {
 // Expects a JSON payload with a long_url (and optional force_new)
 // Returns a JSON object containing the generated short_url
 func (h *Handler) Shorten(w http.ResponseWriter, r *http.Request) {
+	log.Println("Received shorten request")
+
 	var req struct {
 		LongURL  string `json:"long_url"`
 		ForceNew bool   `json:"force_new"`
