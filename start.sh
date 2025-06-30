@@ -1,8 +1,5 @@
 #!/bin/sh
 
-echo "[start.sh] Checking if backend is responding on http://localhost:8081/health..."
-curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/health || echo "Backend not responding"
-
 echo "[start.sh] Starting Nginx..."
 nginx
 NGINX_EXIT=$?
@@ -14,8 +11,16 @@ else
   echo "[start.sh] Nginx started successfully"
 fi
 
+echo "[start.sh] Starting Go backend on port $PORT..."
+/usr/bin/url-shortener -port=$PORT &
+BACKEND_PID=$!
+
 # Give Nginx a while..
 sleep 1
+echo "[start.sh] Checking if backend is responding on http://localhost:$PORT/health..."
+curl -s -o /dev/null -w "%{http_code}" http://localhost:$PORT/health || echo "Backend not responding"
+
+wait $BACKEND_PID
 
 echo "[start.sh] Checking env config..."
 
