@@ -16,16 +16,32 @@ sleep 1
 
 echo "[start.sh] Checking env config..."
 
-# Only source .env if DATABASE_URL is not already set (e.g. Railway)
-if [ -z "$DATABASE_URL" ]; then
-  if [ -f /app/.env ]; then
-    echo "[start.sh] Sourcing .env from /app/.env"
-    export $(grep -v '^#' /app/.env | xargs)
-  else
-    echo "[start.sh] WARNING: /app/.env not found"
-  fi
+## Only source .env if DATABASE_URL is not already set (e.g. Railway)
+#if [ -z "$DATABASE_URL" ]; then
+#  if [ -f /app/.env ]; then
+#    echo "[start.sh] Sourcing .env from /app/.env"
+#    export $(grep -v '^#' /app/.env | xargs)
+#  else
+#    echo "[start.sh] WARNING: /app/.env not found"
+#  fi
+#else
+#  echo "[start.sh] DATABASE_URL already set – skipping .env loading"
+#fi
+
+if [ -n "$RAILWAY_ENVIRONMENT" ]; then
+  ENV_FILE="/app/.env.production"
+  echo "[start.sh] Detected Railway environment"
+elif [ -f "/app/.env" ]; then
+  ENV_FILE="/app/.env"
+  echo "[start.sh] Using default .env"
 else
-  echo "[start.sh] DATABASE_URL already set – skipping .env loading"
+  echo "[start.sh] No .env file found, skipping"
+fi
+
+# Wczytaj env tylko jeśli zmienne nie są jeszcze ustawione
+if [ -f "$ENV_FILE" ]; then
+  echo "[start.sh] Sourcing $ENV_FILE"
+  export $(grep -v '^#' "$ENV_FILE" | xargs)
 fi
 
 echo "[start.sh] DATABASE_URL=$DATABASE_URL"

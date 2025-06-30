@@ -11,25 +11,27 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 COPY .env.docker /app/.env.docker
-#COPY .env.production /app/.env.production
+COPY .env.production /app/.env.production
 RUN CGO_ENABLED=0 GOOS=linux go build -o url-shortener ./cmd/api
 
 # Stage 3: Final image with Nginx and Go app
 FROM nginx:stable-alpine
 WORKDIR /app
 
-# Copy frontend build to Nginx public folder
+# Frontend build to Nginx public folder
 COPY --from=frontend /app/dist /usr/share/nginx/html
 
-# Copy Go backend binary
-COPY --from=backend /app/url-shortener /usr/bin/url-shortener
+# Env from build
 COPY --from=backend /app/.env.docker /app/.env
-#COPY --from=backend /app/.env.production /app/.env.production
+COPY --from=backend /app/.env.production /app/.env.production
 
-# Copy Nginx config
+# Go backend binary
+COPY --from=backend /app/url-shortener /usr/bin/url-shortener
+
+# Nginx config
 COPY deploy/nginx.conf /etc/nginx/nginx.conf
 
-# Copy startup script
+# Startup script
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
@@ -37,7 +39,7 @@ RUN chmod +x /start.sh
 EXPOSE 80
 
 # Listening port
-ENV PORT=8080
+#ENV PORT=8080
 
 # Run both services
 ENTRYPOINT ["/start.sh"]
