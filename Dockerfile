@@ -11,7 +11,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 COPY .env.docker /app/.env.docker
-COPY .env.production /app/.env.production
+#COPY .env.production /app/.env.production
 RUN CGO_ENABLED=0 GOOS=linux go build -o url-shortener ./cmd/api
 
 # Stage 3: Final image with Nginx and Go app
@@ -24,7 +24,7 @@ COPY --from=frontend /app/dist /usr/share/nginx/html
 # Copy Go backend binary
 COPY --from=backend /app/url-shortener /usr/bin/url-shortener
 COPY --from=backend /app/.env.docker /app/.env
-COPY --from=backend /app/.env.production /app/.env.production
+#COPY --from=backend /app/.env.production /app/.env.production
 
 # Copy Nginx config
 COPY deploy/nginx.conf /etc/nginx/nginx.conf

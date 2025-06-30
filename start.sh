@@ -1,8 +1,7 @@
 #!/bin/sh
 
 echo "[start.sh] Starting Nginx..."
-# Nginx works as subprocess, not deamon
-nginx -g 'daemon off;' &
+nginx
 NGINX_EXIT=$?
 
 if [ $NGINX_EXIT -ne 0 ]; then
@@ -15,32 +14,29 @@ fi
 # Give Nginx a while..
 sleep 1
 
-# Dynamic Select .env:
-if [ -n "$RAILWAY_ENV" ]; then
-  ENV_FILE="$RAILWAY_ENV"
+echo "[start.sh] Checking env config..."
+
+# Only source .env if DATABASE_URL is not already set (e.g. Railway)
+if [ -z "$DATABASE_URL" ]; then
+  if [ -f /app/.env ]; then
+    echo "[start.sh] Sourcing .env from /app/.env"
+    export $(grep -v '^#' /app/.env | xargs)
+  else
+    echo "[start.sh] WARNING: /app/.env not found"
+  fi
 else
-  # default for local usage
-  ENV_FILE=".env.docker"
+  echo "[start.sh] DATABASE_URL already set – skipping .env loading"
 fi
 
-echo "[start.sh] Using env file: $ENV_FILE"
-if [ -f "/app/$ENV_FILE" ]; then
-  export $(grep -v '^#' "/app/$ENV_FILE" | xargs)
-else
-  echo "[start.sh] WARNING: Env file /app/$ENV_FILE not found"
-fi
-
-echo "[start.sh] Listing files in /app:"
-ls -la /app
-
-echo "[start.sh] PORT value: $PORT"
+echo "[start.sh] DATABASE_URL=$DATABASE_URL"
+echo "[start.sh] BASE_URL=$BASE_URL"
+echo "[start.sh] PORT=$PORT"
 
 echo "[start.sh] Checking if Nginx is responding on port 80..."
-
 curl -I http://localhost/ || echo "[start.sh] ERROR: Nginx not responding on port 80"
 
 echo "[start.sh] Checking frontend build in /usr/share/nginx/html:"
 ls -l /usr/share/nginx/html || echo "[start.sh] WARNING: Frontend files missing!"
 
-echo "[start.sh] Starting Go backend on port 8081..."
-exec /usr/bin/url-shortener -port=8081
+echo "[start.sh] Starting Go backend on port $PORT..."
+exec /usr/bin/url-shortener -port=$PORT
