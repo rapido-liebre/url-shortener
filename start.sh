@@ -11,16 +11,16 @@ else
   echo "[start.sh] Nginx started successfully"
 fi
 
-echo "[start.sh] Starting Go backend on port $PORT..."
-/usr/bin/url-shortener -port=$PORT &
-BACKEND_PID=$!
+#echo "[start.sh] Starting Go backend on port $PORT..."
+#/usr/bin/url-shortener -port=$PORT &
+#BACKEND_PID=$!
 
 # Give Nginx a while..
 sleep 1
-echo "[start.sh] Checking if backend is responding on http://localhost:$PORT/health..."
-curl -s -o /dev/null -w "%{http_code}" http://localhost:$PORT/health || echo "[start.sh] Backend not reachable"
-
-wait $BACKEND_PID
+#echo "[start.sh] Checking if backend is responding on http://localhost:$PORT/health..."
+#curl -s -o /dev/null -w "%{http_code}" http://localhost:$PORT/health || echo "[start.sh] Backend not reachable"
+#
+#wait $BACKEND_PID
 
 echo "[start.sh] Checking env config..."
 
