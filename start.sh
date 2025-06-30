@@ -65,6 +65,9 @@ ls -l /usr/share/nginx/html || echo "[start.sh] WARNING: Frontend files missing!
 echo "[start.sh] Checking if frontend is responding on http://localhost/"
 curl -I http://localhost/
 
+echo "[start.sh] Checking if backend is reachable from Nginx..."
+curl -I http://localhost:8081/health || echo "Backend not reachable"
+
 echo "[start.sh] Nginx access log:"
 cat /var/log/nginx/access.log || echo "No access log"
 
