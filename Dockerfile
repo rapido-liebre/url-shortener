@@ -24,6 +24,7 @@ COPY --from=frontend /app/dist /usr/share/nginx/html
 # Copy Go backend binary
 COPY --from=backend /app/url-shortener /usr/bin/url-shortener
 COPY --from=backend /app/.env.docker /app/.env
+COPY --from=backend /app/.env.production /app/.env.production
 
 # Copy Nginx config
 COPY deploy/nginx.conf /etc/nginx/nginx.conf
