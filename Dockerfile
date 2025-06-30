@@ -10,25 +10,20 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-COPY .env.docker /app/.env
+COPY .env.docker /app/.env.docker
+COPY .env.production /app/.env.production
 RUN CGO_ENABLED=0 GOOS=linux go build -o url-shortener ./cmd/api
 
 # Stage 3: Final image with Nginx and Go app
 FROM nginx:stable-alpine
 WORKDIR /app
 
-# --------- DYNAMIC ENV SELECTION ---------
-# Default for local Docker use
-ARG RAILWAY_ENV=.env.docker
-COPY ${RAILWAY_ENV} /app/.env
-# --------------------------------------------
-
 # Copy frontend build to Nginx public folder
 COPY --from=frontend /app/dist /usr/share/nginx/html
 
 # Copy Go backend binary
 COPY --from=backend /app/url-shortener /usr/bin/url-shortener
-COPY --from=backend /app/.env /app/.env
+COPY --from=backend /app/.env.docker /app/.env
 
 # Copy Nginx config
 COPY deploy/nginx.conf /etc/nginx/nginx.conf

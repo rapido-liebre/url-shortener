@@ -15,11 +15,19 @@ fi
 # Give Nginx a while..
 sleep 1
 
-echo "[start.sh] Sourcing .env from /app/.env"
-if [ -f /app/.env ]; then
-  export $(grep -v '^#' /app/.env | xargs)
+# Dynamic Select .env:
+if [ -n "$RAILWAY_ENV" ]; then
+  ENV_FILE="$RAILWAY_ENV"
 else
-  echo "[start.sh] WARNING: /app/.env not found"
+  # default for local usage
+  ENV_FILE=".env.docker"
+fi
+
+echo "[start.sh] Using env file: $ENV_FILE"
+if [ -f "/app/$ENV_FILE" ]; then
+  export $(grep -v '^#' "/app/$ENV_FILE" | xargs)
+else
+  echo "[start.sh] WARNING: Env file /app/$ENV_FILE not found"
 fi
 
 echo "[start.sh] Listing files in /app:"
