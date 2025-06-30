@@ -74,6 +74,14 @@ func setupRouter(h *handler.Handler) http.Handler {
 		AllowCredentials: false,
 	}))
 
+	// logging incoming requests
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Printf("INCOMING: %s %s", r.Method, r.URL.Path)
+			next.ServeHTTP(w, r)
+		})
+	})
+
 	r.Post("/links/shorten", h.Shorten)
 	r.Get("/u/{id}", h.Redirect)
 
