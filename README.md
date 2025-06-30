@@ -25,6 +25,15 @@ Redirects: `https://url-shortener-production-8953.up.railway.app/u/:id`
 docker-compose up --build
 ```
 
+## 🚀 Running locally (without Docker)
+
+```bash
+go run ./cmd/api
+cd frontend
+npm install
+npm run dev
+```
+
 ## 🔗 Local services
 
 - Frontend: http://localhost:3000

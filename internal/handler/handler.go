@@ -48,6 +48,7 @@ func (h *Handler) Shorten(w http.ResponseWriter, r *http.Request) {
 	// Generate or fetch existing short URL
 	shortURL, err := h.svc.ShortenURL(r.Context(), req.LongURL, req.ForceNew)
 	if err != nil {
+		log.Printf("ShortenURL error: %v", err)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
