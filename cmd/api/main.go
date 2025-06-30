@@ -77,6 +77,10 @@ func setupRouter(h *handler.Handler) http.Handler {
 	r.Post("/links/shorten", h.Shorten)
 	r.Get("/u/{id}", h.Redirect)
 
+	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
 	return r
 }
 

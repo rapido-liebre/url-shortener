@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "[start.sh] Checking if backend is responding on http://localhost:8081/health..."
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/health || echo "Backend not responding"
+
 echo "[start.sh] Starting Nginx..."
 nginx
 NGINX_EXIT=$?
