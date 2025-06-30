@@ -10,7 +10,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-#COPY .env.docker /app/.env
+COPY .env.docker /app/.env
 RUN CGO_ENABLED=0 GOOS=linux go build -o url-shortener ./cmd/api
 
 # Stage 3: Final image with Nginx and Go app
